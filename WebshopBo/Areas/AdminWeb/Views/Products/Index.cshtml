@@ -1,0 +1,222 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div id="Product_vue">
+    <div class="p-3">
+        <button type="button" class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#exampleModal" v-on:click="resetData">
+            Thêm mới sản phẩm
+        </button>
+    </div>
+
+    <table class="table table-bordered" id="table_products">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th style="width: 20%">Tên sản phẩm</th>
+                <th style="width: 10%">Số lượng sản phẩm</th>
+                <th style="width: 30%">Ảnh sản phẩm</th>
+                <th>Danh mục sản phẩm</th>
+                <th>Giá sản phẩm</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item,index) in dataItems" :key="index">
+                <td>{{index + 1}}</td>
+                <td>{{item.productName}}</td>
+                <td>{{item.quantity}}</td>
+                <td>
+                    <img :src="item.imageMain" style="width:20%" />
+                </td>
+                <td>
+                    {{item.categoriesMain.categoryName}}
+                </td>
+                <td>
+                    <p class="text-success">
+                        Giá chưa giảm:
+                        {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.price) }}
+
+                    </p>
+                    <p class="text-success">
+                        Giá giảm:
+                        {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.priceDiscount) }}
+
+                    </p>
+                </td>
+                <td>
+                    <a :href=`/Products/Edit/${item.id}` class ="btn btn-primary" >Sửa</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#Delete" v-on:click="getItemsByIdDelete(item.id)">Xóa</button>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    @*add*@
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-xl modal-fullscreen ">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thêm mới sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="resetData">X</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tên sản phẩm</label>
+                                <input class="form-control" type="text" placeholder="Tên sản phẩm" aria-label="default input example" v-model="ProductName" v-on:blur="generateSlug">
+                            </div>
+                            <div class="mb-3">
+
+                                <label class="form-label">Slug sản phẩm</label>
+                                <input class="form-control" type="text" placeholder="Slug" aria-label="default input example" v-model="Slug">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số lượng sản phẩm</label>
+                                <input class="form-control" type="text" placeholder="Tên sản phẩm" aria-label="default input example" v-model="quantity">
+                            </div>
+                            <div class="mb-3">
+                                <label class="control-label">Danh mục sản phẩm</label>
+                                <select v-model="CategoryID" class="form-control">
+                                    <option v-for="tp in dataSubItems" v-bind:key="tp.categoryID" v-bind:value="tp.categoryID">{{ tp.categoryName }}</option>
+                                </select>
+
+                            </div>
+                          
+                            <div class="mb-3">
+
+                                <label class="form-label">Mô tả ngắn sản phẩm</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="Mô tả ngắn sản phẩm" v-model="ShortDescription"></textarea>
+                            </div>
+                            <div class="mb-3">
+
+                                <label class="form-label">Giá sản phẩm</label>
+                                <input class="form-control" type="text" placeholder="Giá sản phẩm" aria-label="default input example" v-model="Price">
+                            </div>
+                            <div class="mb-3">
+
+                                <label class="form-label">Giá sản phẩm giảm</label>
+                                <input class="form-control" type="text" placeholder="Giá sản phẩm" aria-label="default input example" v-model="PriceDiscount">
+                            </div>
+
+
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="formFileSm" class="form-label"> Ảnh sản phẩm chính </label>
+                                <input type="file" ref="PrPath" v-on:change="onFileChange" accept="image/*">
+
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-label"> Ảnh xem trước </div>
+                                <img :src="previewImage" alt="" style="width:50%" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <textarea id="editor" v-model="ckName" placeholder="Mô tả chi tiết"> </textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="resetData">Đóng</button>
+                    <button type="button" class="btn btn-primary" v-on:click="addProducts">Lưu sản phẩm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*add*@
+    <div class="modal fade" id="Edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-xl modal-fullscreen ">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sửa sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" v-on:click="resetData">X</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tên sản phẩm</label>
+                                <input class="form-control" type="text" placeholder="Tên sản phẩm" aria-label="default input example" v-model="ProductName">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số lượng sản phẩm</label>
+                                <input class="form-control" type="text" placeholder="Tên sản phẩm" aria-label="default input example" v-model="quantity">
+                            </div>
+                            <div class="mb-3">
+                                <label class="control-label">Danh mục sản phẩm</label>
+                                <select v-model="CategoryID" class="form-control">
+                                    <option v-for="tp in dataSubItems" v-bind:key="tp.categoryID" v-bind:value="tp.categoryID">{{ tp.categoryName }}</option>
+                                </select>
+
+                            </div>
+                            <div class="mb-3">
+
+                                <label class="form-label">Slug sản phẩm</label>
+                                <input class="form-control" type="text" placeholder="Slug" aria-label="default input example" v-model="Slug">
+                            </div>
+                            <div class="mb-3">
+
+                                <label class="form-label">Mô tả ngắn sản phẩm</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="Mô tả ngắn sản phẩm" v-model="ShortDescription"></textarea>
+                            </div>
+                            <div class="mb-3">
+
+                                <label class="form-label">Giá sản phẩm</label>
+                                <input class="form-control" type="text" placeholder="Giá sản phẩm" aria-label="default input example" v-model="Price">
+                            </div>
+                            <div class="mb-3">
+
+                                <label class="form-label">Giá sản phẩm giảm</label>
+                                <input class="form-control" type="text" placeholder="Giá sản phẩm" aria-label="default input example" v-model="PriceDiscount">
+                            </div>
+
+
+                        </div>
+                        <div class="col-6">
+
+                            <div class="mb-3 mt-3">
+                                <div class="form-label"> Ảnh đang có </div>
+                                <img :src="imageProducts" alt="" style="width:50%" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="formFileSm" class="form-label"> Thay ảnh </label>
+                                <input type="file" ref="PrPath1" v-on:change="onFileChange1" accept="image/*">
+
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-label"> Ảnh xem trước </div>
+                                <img :src="previewImage1" alt="" style="width:50%" />
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <textarea id="editorMain" v-model="detailsCkName" placeholder="Mô tả chi tiết"> </textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="resetData">Đóng</button>
+                    <button type="button" class="btn btn-primary" v-on:click="editProducts">Lưu sản phẩm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/lib/config/datatableconfig.js" asp-append-version="true"></script>
+<script src="~/lib/config/config_ckeditor.js" asp-append-version="true"></script>
+<script src="~/admin/js/adminjs/admin_products.js"></script>

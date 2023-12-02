@@ -1,0 +1,179 @@
+﻿@model WebshopBo.Models.ViewHome.ListViewHomeCRUD
+@{
+}
+<div id="Cart_checkout">
+    <section id="section_usp_bar_v2">
+        <div class="row text-center mt-2">
+            <div class="col">
+                <span class="icon cl-blue-d">
+                    <i class="fa fa-truck"></i>
+                    Free Shipping
+                </span>
+            </div>
+            <div class="d-none d-sm-block col">
+                <span class="icon cl-blue-d">
+                    <i class="fa fa-ban"></i>
+                    No Junk, No Jerks
+                </span>
+            </div>
+            <div class="d-none d-sm-block col">
+                <span class="icon cl-blue-d">
+                    <i class="fa-solid fa-headset"></i>
+                    24/7/365 Support
+                </span>
+            </div>
+            <div class="d-none d-sm-block col">
+                <span class="icon cl-blue-d ">
+                    <i class="fa-brands fa-paypal"></i>
+                    PayPal Protection
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section_top">
+        <div class="row">
+            <div class="col-xs-6 col-md-9">
+                <h1 class="mt-1">Cart Details</h1>
+                @foreach (var items in Model.OrderMain.OrderDetailsList)
+                {
+                    <section class="section_billboard mb-2">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12">
+                                <div class="cart_items">
+                                    <div>
+                                        <div class="cart_item">
+                                            <div class="row">
+                                                <div class="col-xs-3 col-md-2" align="center">
+                                                    <a href="javascript:void(0)">
+                                                        <img src="@items.Product_Image"
+                                                             alt="" height="100">
+                                                    </a>
+                                                    <p class="text-center" style="color: red;" v-on:click="deleteOrdersAndOrderDetails(index)">Remove</p>
+                                                </div>
+                                                <div class="col-xs-9 col-md-10">
+                                                    <div class="row">
+                                                        <div class="col-xs-9 col-md-8" align="left">
+                                                            <p class="color-green f-w-600">
+                                                                @items.Product_Name
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-xs-3 col-md-4" align="right">
+                                                            @{
+                                                                var priceMain = items.Product_Price * items.Product_Quantity;
+                                                            }
+                                                            <p class="color-green f-w-600">Quantity: @items.Product_Quantity x  $@String.Format("{0:N2}", items.Product_Price)</p>
+                                                        </div>
+                                                    </div>
+                                                    <hr class="m-0">
+
+
+                                                    <hr class="m-0">
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-xs-12 col-md-8">
+                                                            <div class="seller_info">
+                                                                <div class="text-nowrap" style="overflow: hidden;">
+                                                                    <span>
+                                                                        <i class='cl-star2 bx bxs-star'></i><i class='cl-star2 bx bxs-star'></i><i class='cl-star2 bx bxs-star'></i><i class='cl-star2 bx bxs-star'></i><i class='cl-star2 bx bxs-star'></i>
+
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12 col-md-4">
+                                                            <div class="d-flex justify-content-end">
+                                                                <a href="#"
+                                                                   class="btn btn-primary btn-block btn_buy_item cart_item_checkout p-2 bgg-green">
+                                                                    Total: $@String.Format("{0:N2}", priceMain)
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="mt-3">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-md-6">
+                                                    <div class="col-12">
+                                                        <p class="color-dark">Get your item faster.</p>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 d-flex">
+                                                    <input type="checkbox" class="check_express" v-model="isCheckedItems[index]" v-on:click="toggleItemChecked(index)">
+                                                    <a href="#" class="ml-2 color-dark">
+                                                        Express Shipping +
+                                                        $39.00
+                                                    </a>
+
+                                                </div>
+
+                                            </div>
+                                            <hr class="mt-2">
+
+                                            <div class="pay-p-more">
+                                                <span class="cl-blue-d f_s_1" style="font-weight: 700;">
+                                                    <i class='cl-blue-d bx bxl-paypal'></i>
+                                                    Credit
+
+                                                </span>
+                                                <span class="" style="font-size: 12px;">
+                                                    No Interest if paid in full in 6 months.
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+                }
+            </div>
+            @{
+                var count = Model.OrderMain.OrderDetailsList.Count();
+            }
+            <div class="col-xs-6 col-md-3">
+                <div class="alert alert-success text-center">
+                    @count items,
+
+                    <strong> $@String.Format("{0:N2}", Model.OrderMain.Total_Price) </strong>total
+                </div>
+                <div class="d-flex justify-content-center">
+                    <a href="/Home/CheckOut"
+                       class="btn btn-primary btn-block btn_buy_item cart_item_checkout p-2 bgg-green">
+                        Buy
+                        Now: $@String.Format("{0:N2}", Model.OrderMain.Total_Price)
+                    </a>
+                </div>
+                <div class="well f-s-12 mt-4">
+                    <p class="color-dark">Use the Cart to keep track of listings you want to buy.</p>
+                    <p class="color-dark">Remember, items in your cart can still be bought by other users.</p>
+                    <p class="color-dark">To buy a listing in your cart click on its Buy Now button.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 card p-3">
+            <hr>
+            <form method="post" asp-action="TestPaypal">
+                <div class="mb-4">
+                    <label>số lượng</label>
+                    <input name="orderId" class="form-control" />
+
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary w-50">Pay Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+</div>

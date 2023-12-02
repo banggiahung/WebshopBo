@@ -1,0 +1,35 @@
+﻿@model List<WebshopBo.Models.Products>
+
+@foreach (var item in Model)
+{
+
+    <div class="col-12 col-lg-3 col-md-6 d-flex flex-column align-items-center justify-content-center product-item my-3">
+        <div class="product">
+            <a href="/products-shop/@item.Slug">
+                <img src="@item.ImageMain" alt="">
+            </a>
+            <ul class="d-flex align-items-center justify-content-center list-unstyled icons">
+                <li class="icon"><span class="fas fa-expand-arrows-alt"></span></li>
+                <li class="icon mx-3"><span class="far fa-heart"></span></li>
+                <li class="icon"><span class="fas fa-shopping-bag"></span></li>
+            </ul>
+        </div>
+        @*<div class="tag bg-red">sale</div>*@
+        <div class="title pt-4 pb-1">@item.ProductName</div>
+        <div class="d-flex align-content-center justify-content-center">
+            <span class="fas fa-star"></span>
+            <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span>
+        </div>
+        @if (item.PriceDiscount != 0)
+        {
+            decimal discountedPrice = (decimal)item.PriceDiscount;
+            <div class="price">@string.Format("{0:C}", discountedPrice)</div>
+        }
+        else
+        {
+            decimal originalPrice = (decimal)item.Price;
+            <div class="price">@string.Format("{0:C}", originalPrice)</div>
+
+        }
+    </div>
+}

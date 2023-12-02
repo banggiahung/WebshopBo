@@ -1,0 +1,77 @@
+﻿@model WebshopBo.Models.Products
+<div id="edit_products">
+    <input type="hidden" value="@Model.ID" id="idProducts"/>
+    <div class="row">
+        <div class="col-6">
+            <div class="mb-3">
+                <label class="form-label">Tên sản phẩm</label>
+                <input class="form-control" type="text" placeholder="Tên sản phẩm" aria-label="default input example" v-model="ProductName">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Số lượng sản phẩm</label>
+                <input class="form-control" type="text" placeholder="Tên sản phẩm" aria-label="default input example" v-model="quantity">
+            </div>
+            <div class="mb-3">
+                <label class="control-label">Danh mục sản phẩm</label>
+                <select v-model="CategoryID" class="form-control">
+                    <option v-for="tp in dataSubItems" v-bind:key="tp.categoryID" v-bind:value="tp.categoryID">{{ tp.categoryName }}</option>
+                </select>
+
+            </div>
+            <div class="mb-3">
+
+                <label class="form-label">Slug sản phẩm</label>
+                <input class="form-control" type="text" :value="Slug" placeholder="Slug được tạo tự động" readonly />
+            </div>
+            <div class="mb-3">
+
+                <label class="form-label">Mô tả ngắn sản phẩm</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="Mô tả ngắn sản phẩm" v-model="ShortDescription"></textarea>
+            </div>
+            <div class="mb-3">
+
+                <label class="form-label">Giá sản phẩm</label>
+                <input class="form-control" type="text" placeholder="Giá sản phẩm" aria-label="default input example" v-model="Price">
+            </div>
+            <div class="mb-3">
+
+                <label class="form-label">Giá sản phẩm giảm</label>
+                <input class="form-control" type="text" placeholder="Giá sản phẩm" aria-label="default input example" v-model="PriceDiscount">
+            </div>
+
+
+        </div>
+        <div class="col-6">
+
+            <div class="mb-3 mt-3">
+                <div class="form-label"> Ảnh đang có </div>
+                <img :src="imageProducts" alt="" style="width:50%" />
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="mb-3">
+                <label for="formFileSm" class="form-label"> Thay ảnh </label>
+                <input type="file" ref="PrPath1" v-on:change="onFileChange1" accept="image/*">
+
+            </div>
+            <div class="mb-3">
+                <div class="form-label"> Ảnh xem trước </div>
+                <img :src="previewImage1" alt="" style="width:50%" />
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <textarea id="editorMain" v-model="detailsCkName" placeholder="Mô tả chi tiết"> </textarea>
+        </div>
+
+    </div>
+    <div class="d-flex flex-column">
+        <a class="btn btn-warning mb-4 mt-5" v-on:click="editProducts">XÁC NHẬN</a>
+        <a class="text-success" href="/Products">Trở về trang sản phẩm</a>
+    </div>
+</div>
+<script src="~/lib/config/datatableconfig.js" asp-append-version="true"></script>
+<script src="~/lib/config/config_ckeditor.js" asp-append-version="true"></script>
+<script src="~/admin/js/adminjs/admin_editproducts.js"></script>
